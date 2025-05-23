@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import BackButton from '../components/BackButton';
@@ -7,9 +7,11 @@ import Confetti from '../components/Confetti';
 const fadeIn = keyframes`
   from {
     opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 `;
 
@@ -18,50 +20,67 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 `;
 
 const Question = styled.h2`
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: #2c3e50;
   margin-bottom: 3rem;
   animation: ${fadeIn} 1s ease-out;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 30px;
   justify-content: center;
   align-items: center;
   animation: ${fadeIn} 1s ease-out 0.3s backwards;
+  margin-top: 20px;
 `;
 
 const Button = styled.button`
-  padding: 15px 40px;
-  font-size: 1.2rem;
+  padding: 18px 45px;
+  font-size: 1.3rem;
   color: white;
   border: none;
-  border-radius: 30px;
+  border-radius: 50px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   transform: ${props => props.isNo ? `scale(${props.scale})` : 'scale(1)'};
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 
   &:hover {
     transform: ${props => props.isNo ? `scale(${props.scale + 0.1})` : 'scale(1.1)'};
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 `;
 
 const YesButton = styled(Button)`
   background: linear-gradient(45deg, #2ecc71, #27ae60);
+  &:hover {
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
+  }
 `;
 
 const NoButton = styled(Button)`
   background: linear-gradient(45deg, #e74c3c, #c0392b);
+  &:hover {
+    background: linear-gradient(45deg, #c0392b, #e74c3c);
+  }
 `;
 
 const getSadEmoji = (scale) => {
