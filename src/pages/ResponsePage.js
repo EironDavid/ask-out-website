@@ -33,9 +33,10 @@ const Question = styled.h2`
 `;
 
 const ButtonContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
   animation: ${fadeIn} 1s ease-out 0.3s backwards;
 `;
 
@@ -47,7 +48,6 @@ const Button = styled.button`
   border-radius: 30px;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: absolute;
   transform: ${props => props.isNo ? `scale(${props.scale})` : 'scale(1)'};
 
   &:hover {
@@ -58,8 +58,6 @@ const Button = styled.button`
 
 const YesButton = styled(Button)`
   background: linear-gradient(45deg, #2ecc71, #27ae60);
-  left: 50%;
-  transform: translateX(-50%);
 `;
 
 const NoButton = styled(Button)`
@@ -74,24 +72,11 @@ const getSadEmoji = (scale) => {
 
 const ResponsePage = () => {
   const [noScale, setNoScale] = useState(1);
-  const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
   const [showConfetti, setShowConfetti] = useState(false);
   const navigate = useNavigate();
-  const containerRef = useRef(null);
 
   const handleNoClick = () => {
     setNoScale(prevScale => prevScale + 0.1);
-    
-    const container = containerRef.current;
-    const containerRect = container.getBoundingClientRect();
-    
-    const maxX = containerRect.width - 200;
-    const maxY = containerRect.height - 60;
-    
-    const newX = Math.random() * maxX;
-    const newY = Math.random() * maxY;
-    
-    setNoPosition({ x: newX, y: newY });
   };
 
   const handleYesClick = () => {
@@ -106,7 +91,7 @@ const ResponsePage = () => {
       <BackButton />
       {showConfetti && <Confetti />}
       <Question>Will you go out with me? 💝</Question>
-      <ButtonContainer ref={containerRef}>
+      <ButtonContainer>
         <YesButton onClick={handleYesClick}>
           Yes! 💖
         </YesButton>
@@ -114,11 +99,6 @@ const ResponsePage = () => {
           isNo={true}
           scale={noScale}
           onClick={handleNoClick}
-          style={{ 
-            transform: `scale(${noScale})`,
-            left: `${noPosition.x}px`,
-            top: `${noPosition.y}px`
-          }}
         >
           No {getSadEmoji(noScale)}
         </NoButton>
