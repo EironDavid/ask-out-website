@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import BackButton from '../components/BackButton';
 import Confetti from '../components/Confetti';
+import CupidsAim from '../components/CupidsAim';
 
 const fadeIn = keyframes`
   from {
@@ -90,15 +91,23 @@ const getSadEmoji = (scale) => {
 };
 
 const ResponsePage = () => {
-  const [noScale, setNoScale] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showGame, setShowGame] = useState(false);
   const navigate = useNavigate();
 
   const handleNoClick = () => {
-    setNoScale(prevScale => prevScale + 0.1);
+    setShowGame(true);
   };
 
   const handleYesClick = () => {
+    setShowConfetti(true);
+    setTimeout(() => {
+      navigate('/date-type');
+    }, 2000);
+  };
+
+  const handleGameComplete = () => {
+    setShowGame(false);
     setShowConfetti(true);
     setTimeout(() => {
       navigate('/date-type');
@@ -109,19 +118,21 @@ const ResponsePage = () => {
     <Container>
       <BackButton />
       {showConfetti && <Confetti />}
-      <Question>Will you go out with me? 💝</Question>
-      <ButtonContainer>
-        <YesButton onClick={handleYesClick}>
-          Yes! 💖
-        </YesButton>
-        <NoButton 
-          isNo={true}
-          scale={noScale}
-          onClick={handleNoClick}
-        >
-          No {getSadEmoji(noScale)}
-        </NoButton>
-      </ButtonContainer>
+      {showGame ? (
+        <CupidsAim onComplete={handleGameComplete} />
+      ) : (
+        <>
+          <Question>Will you go out with me? 💝</Question>
+          <ButtonContainer>
+            <YesButton onClick={handleYesClick}>
+              Yes! 💖
+            </YesButton>
+            <NoButton onClick={handleNoClick}>
+              No 💔
+            </NoButton>
+          </ButtonContainer>
+        </>
+      )}
     </Container>
   );
 };

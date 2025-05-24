@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import BackButton from '../components/BackButton';
 
@@ -13,15 +13,15 @@ const fadeIn = keyframes`
   }
 `;
 
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
+const float = keyframes`
+  0% {
     transform: translateY(0);
   }
-  40% {
+  50% {
     transform: translateY(-20px);
   }
-  60% {
-    transform: translateY(-10px);
+  100% {
+    transform: translateY(0);
   }
 `;
 
@@ -33,6 +33,7 @@ const Container = styled.div`
   min-height: 100vh;
   padding: 20px;
   text-align: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 `;
 
 const Title = styled.h1`
@@ -42,99 +43,32 @@ const Title = styled.h1`
   animation: ${fadeIn} 1s ease-out;
 `;
 
-const Subtitle = styled.h2`
+const Message = styled.div`
   font-size: 2rem;
   color: #34495e;
   margin-bottom: 3rem;
   animation: ${fadeIn} 1s ease-out 0.3s backwards;
-`;
-
-const ButtonContainer = styled.div`
   display: flex;
-  gap: 2rem;
-  animation: ${fadeIn} 1s ease-out 0.3s backwards;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 `;
 
-const Button = styled.button`
-  padding: 15px 40px;
-  font-size: 1.2rem;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-`;
-
-const CasualButton = styled(Button)`
-  background: linear-gradient(45deg, #3498db, #2980b9);
-  animation: ${bounce} 2s infinite;
-
-  &:hover {
-    background: linear-gradient(45deg, #2980b9, #3498db);
-  }
-`;
-
-const FancyButton = styled(Button)`
-  background: linear-gradient(45deg, #9b59b6, #8e44ad);
-  animation: ${bounce} 2s infinite 0.5s;
-
-  &:hover {
-    background: linear-gradient(45deg, #8e44ad, #9b59b6);
-  }
-`;
-
-const Message = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.95);
-  padding: 20px 40px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  animation: ${fadeIn} 0.5s ease-out;
-  z-index: 1000;
+const Heart = styled.span`
+  font-size: 3rem;
+  animation: ${float} 2s infinite ease-in-out;
+  display: inline-block;
 `;
 
 const DateTypePage = () => {
-  const [showMessage, setShowMessage] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const handleChoice = (type) => {
-    const messages = {
-      casual: "Great choice! Let's keep it casual and fun! 😊",
-      fancy: "Fancy it is! Let's make it special! ✨"
-    };
-    setMessage(messages[type]);
-    setShowMessage(true);
-    setTimeout(() => setShowMessage(false), 3000);
-  };
-
   return (
     <Container>
       <BackButton />
-      <Title>OKAY YAYYY! 🎉</Title>
-      <Subtitle>What kind of date would you prefer?</Subtitle>
-      <ButtonContainer>
-        <CasualButton onClick={() => handleChoice('casual')}>
-          Casual Date 🎮
-        </CasualButton>
-        <FancyButton onClick={() => handleChoice('fancy')}>
-          Fancy Date 🎭
-        </FancyButton>
-      </ButtonContainer>
-      {showMessage && <Message>{message}</Message>}
+      <Title>YAY! 🎉</Title>
+      <Message>
+        <div>Okay miss ma'am, I'll go set it now! 💝</div>
+        <Heart>❤️</Heart>
+      </Message>
     </Container>
   );
 };

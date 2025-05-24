@@ -15,13 +15,26 @@ const fadeIn = keyframes`
 
 const float = keyframes`
   0% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-15px) rotate(2deg);
   }
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
+  }
+`;
+
+const openEnvelope = keyframes`
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(0) rotate(10deg);
+    opacity: 0;
   }
 `;
 
@@ -47,6 +60,11 @@ const Envelope = styled.div`
   transition: all 0.3s ease;
   animation: ${float} 3s ease-in-out infinite;
   margin-bottom: 30px;
+  transform-origin: center;
+
+  ${props => props.isOpening && `
+    animation: ${openEnvelope} 1s forwards;
+  `}
 
   &:hover {
     transform: scale(1.05);
@@ -88,6 +106,28 @@ const EnvelopeFlap = styled.div`
   }
 `;
 
+const EnvelopeSeal = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: #ff69b4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+  transition: all 0.3s ease;
+
+  ${Envelope}:hover & {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+`;
+
 const Title = styled.h1`
   font-size: 2.5rem;
   color: #2c3e50;
@@ -126,8 +166,9 @@ const HomePage = () => {
     <Container>
       <Title>Open Letter <Heart>💌</Heart></Title>
       <Subtitle>Click the envelope to open</Subtitle>
-      <Envelope onClick={handleEnvelopeClick}>
+      <Envelope onClick={handleEnvelopeClick} isOpening={isOpening}>
         <EnvelopeFlap />
+        <EnvelopeSeal>❤️</EnvelopeSeal>
       </Envelope>
     </Container>
   );
