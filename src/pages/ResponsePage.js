@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import BackButton from '../components/BackButton';
 import Confetti from '../components/Confetti';
-import CupidsAim from '../components/CupidsAim';
 
 const fadeIn = keyframes`
   from {
@@ -45,14 +44,14 @@ const Question = styled.h2`
   font-size: 3.5rem;
   color: #2c3e50;
   margin-bottom: 3rem;
-  animation: ${fadeIn} 1s ease-out;
+  animation: ${css`${fadeIn} 1s ease-out`};
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
   background: rgba(255, 255, 255, 0.9);
   padding: 30px 50px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  animation: ${float} 3s infinite ease-in-out;
+  animation: ${css`${float} 3s infinite ease-in-out`};
 `;
 
 const ButtonContainer = styled.div`
@@ -60,7 +59,7 @@ const ButtonContainer = styled.div`
   gap: 30px;
   justify-content: center;
   align-items: center;
-  animation: ${fadeIn} 1s ease-out 0.3s backwards;
+  animation: ${css`${fadeIn} 1s ease-out 0.3s backwards`};
   margin-top: 20px;
 `;
 
@@ -105,34 +104,19 @@ const Heart = styled.span`
   color: #ff69b4;
   font-size: 1.2em;
   margin: 0 5px;
-  animation: ${float} 2s infinite ease-in-out;
+  animation: ${css`${float} 2s infinite ease-in-out`};
   display: inline-block;
 `;
 
-const getSadEmoji = (scale) => {
-  const emojis = ['😢', '😭', '💔', '😫', '😩', '😞', '😔', '😥', '😪', '😴'];
-  const index = Math.min(Math.floor((scale - 1) * 2), emojis.length - 1);
-  return emojis[index];
-};
-
 const ResponsePage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
-  const [showGame, setShowGame] = useState(false);
   const navigate = useNavigate();
 
   const handleNoClick = () => {
-    setShowGame(true);
+    // No action or you can add a message here if you want
   };
 
   const handleYesClick = () => {
-    setShowConfetti(true);
-    setTimeout(() => {
-      navigate('/date-type');
-    }, 2000);
-  };
-
-  const handleGameComplete = () => {
-    setShowGame(false);
     setShowConfetti(true);
     setTimeout(() => {
       navigate('/date-type');
@@ -143,23 +127,17 @@ const ResponsePage = () => {
     <Container>
       <BackButton />
       {showConfetti && <Confetti />}
-      {showGame ? (
-        <CupidsAim onComplete={handleGameComplete} />
-      ) : (
-        <>
-          <Question>
-            Would you like to go out with me? <Heart>💝</Heart>
-          </Question>
-          <ButtonContainer>
-            <YesButton onClick={handleYesClick}>
-              Yes! <Heart>💖</Heart>
-            </YesButton>
-            <NoButton onClick={handleNoClick}>
-              No <Heart>💔</Heart>
-            </NoButton>
-          </ButtonContainer>
-        </>
-      )}
+      <Question>
+        Would you like to go out with me? <Heart>💝</Heart>
+      </Question>
+      <ButtonContainer>
+        <YesButton onClick={handleYesClick}>
+          Yes! <Heart>💖</Heart>
+        </YesButton>
+        <NoButton onClick={handleNoClick}>
+          No <Heart>💔</Heart>
+        </NoButton>
+      </ButtonContainer>
     </Container>
   );
 };

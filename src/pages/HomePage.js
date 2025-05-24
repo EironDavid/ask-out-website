@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const fadeIn = keyframes`
   from {
@@ -58,12 +58,12 @@ const Envelope = styled.div`
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
-  animation: ${float} 3s ease-in-out infinite;
+  animation: ${css`${float} 3s ease-in-out infinite`};
   margin-bottom: 30px;
   transform-origin: center;
 
   ${props => props.isOpening && `
-    animation: ${openEnvelope} 1s forwards;
+    animation: ${css`${openEnvelope} 1s forwards`};
   `}
 
   &:hover {
@@ -132,7 +132,7 @@ const Title = styled.h1`
   font-size: 2.5rem;
   color: #2c3e50;
   margin-bottom: 1rem;
-  animation: ${fadeIn} 1s ease-out;
+  animation: ${css`${fadeIn} 1s ease-out`};
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
 `;
@@ -141,14 +141,14 @@ const Subtitle = styled.p`
   font-size: 1.2rem;
   color: #666;
   margin-bottom: 2rem;
-  animation: ${fadeIn} 1s ease-out 0.3s backwards;
+  animation: ${css`${fadeIn} 1s ease-out 0.3s backwards`};
 `;
 
 const Heart = styled.span`
   color: #ff69b4;
   font-size: 1.5em;
   margin: 0 5px;
-  animation: ${float} 2s ease-in-out infinite;
+  animation: ${css`${float} 2s ease-in-out infinite`};
 `;
 
 const HomePage = () => {

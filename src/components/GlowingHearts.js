@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 const float = keyframes`
   0% {
@@ -43,8 +43,8 @@ const Heart = styled.div`
   position: absolute;
   font-size: ${props => props.size}px;
   color: ${props => props.color};
-  animation: ${float} ${props => props.duration}s infinite ease-in-out,
-             ${glow} 2s infinite ease-in-out;
+  animation: ${css`${float} ${props => props.duration}s infinite ease-in-out,
+             ${glow} 2s infinite ease-in-out`};
   opacity: 0.3;
   transform-origin: center;
 `;
