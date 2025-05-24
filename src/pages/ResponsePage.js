@@ -16,6 +16,18 @@ const fadeIn = keyframes`
   }
 `;
 
+const float = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,12 +42,17 @@ const Container = styled.div`
 `;
 
 const Question = styled.h2`
-  font-size: 3rem;
+  font-size: 3.5rem;
   color: #2c3e50;
   margin-bottom: 3rem;
   animation: ${fadeIn} 1s ease-out;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: ${float} 3s infinite ease-in-out;
 `;
 
 const ButtonContainer = styled.div`
@@ -48,25 +65,25 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
-  padding: 18px 45px;
-  font-size: 1.3rem;
+  padding: 20px 50px;
+  font-size: 1.5rem;
   color: white;
   border: none;
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease;
-  transform: ${props => props.isNo ? `scale(${props.scale})` : 'scale(1)'};
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    transform: ${props => props.isNo ? `scale(${props.scale + 0.1})` : 'scale(1.1)'};
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: translateY(-2px);
   }
 `;
 
@@ -82,6 +99,14 @@ const NoButton = styled(Button)`
   &:hover {
     background: linear-gradient(45deg, #c0392b, #e74c3c);
   }
+`;
+
+const Heart = styled.span`
+  color: #ff69b4;
+  font-size: 1.2em;
+  margin: 0 5px;
+  animation: ${float} 2s infinite ease-in-out;
+  display: inline-block;
 `;
 
 const getSadEmoji = (scale) => {
@@ -122,13 +147,15 @@ const ResponsePage = () => {
         <CupidsAim onComplete={handleGameComplete} />
       ) : (
         <>
-          <Question>Will you go out with me? 💝</Question>
+          <Question>
+            Would you like to go out with me? <Heart>💝</Heart>
+          </Question>
           <ButtonContainer>
             <YesButton onClick={handleYesClick}>
-              Yes! 💖
+              Yes! <Heart>💖</Heart>
             </YesButton>
             <NoButton onClick={handleNoClick}>
-              No 💔
+              No <Heart>💔</Heart>
             </NoButton>
           </ButtonContainer>
         </>
