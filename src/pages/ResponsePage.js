@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import BackButton from '../components/BackButton';
 import Confetti from '../components/Confetti';
+import MusicPlayer from '../components/MusicPlayer';
 
 const fadeIn = keyframes`
   from {
@@ -98,6 +99,14 @@ const NoButton = styled(Button)`
   &:hover {
     background: linear-gradient(45deg, #c0392b, #e74c3c);
   }
+  ${props => props.disabled && css`
+    opacity: 0.5;
+    cursor: not-allowed;
+    &:hover {
+      transform: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  `}
 `;
 
 const Heart = styled.span`
@@ -108,12 +117,62 @@ const Heart = styled.span`
   display: inline-block;
 `;
 
+const NoResponseSequence = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  animation: ${fadeIn} 0.5s ease-out;
+`;
+
+const ResponseImage = styled.img`
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+`;
+
+const ResponseMessage = styled.div`
+  color: #2c3e50;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 0 20px;
+  animation: ${fadeIn} 0.5s ease-out;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 15px 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+`;
+
 const ResponsePage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [noClickCount, setNoClickCount] = useState(0);
+  const [showNoSequence, setShowNoSequence] = useState(false);
+  const [audio] = useState(new Audio(require('../media/Just the Way You Are.mp3')));
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Start playing music when component mounts
+    audio.play().catch(error => {
+      console.log("Audio autoplay failed:", error);
+    });
+
+    // Cleanup function to stop music when component unmounts
+    return () => {
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [audio]);
+
   const handleNoClick = () => {
-    // No action or you can add a message here if you want
+    if (noClickCount < 4) {
+      setShowNoSequence(true);
+      setNoClickCount(prev => prev + 1);
+    }
   };
 
   const handleYesClick = () => {
@@ -123,6 +182,35 @@ const ResponsePage = () => {
     }, 2000);
   };
 
+  const getNoResponseContent = () => {
+    switch (noClickCount) {
+      case 1:
+        return {
+          image: require('../media/no1.jpg'),
+          message: "Are you sure?"
+        };
+      case 2:
+        return {
+          image: require('../media/no2.jpg'),
+          message: "At least give me a chance beautiful"
+        };
+      case 3:
+        return {
+          image: require('../media/no3.jpg'),
+          message: "Come on gor wait how do you spell gorjoeus"
+        };
+      case 4:
+        return {
+          image: require('../media/no4.jpg'),
+          message: "Okay, :(("
+        };
+      default:
+        return null;
+    }
+  };
+
+  const noResponseContent = getNoResponseContent();
+
   return (
     <Container>
       <BackButton />
@@ -130,14 +218,24 @@ const ResponsePage = () => {
       <Question>
         Would you like to go out with me? <Heart>💝</Heart>
       </Question>
+      {showNoSequence && noResponseContent && (
+        <NoResponseSequence>
+          <ResponseImage src={noResponseContent.image} alt="Response" />
+          <ResponseMessage>{noResponseContent.message}</ResponseMessage>
+        </NoResponseSequence>
+      )}
       <ButtonContainer>
         <YesButton onClick={handleYesClick}>
           Yes! <Heart>💖</Heart>
         </YesButton>
-        <NoButton onClick={handleNoClick}>
+        <NoButton 
+          onClick={handleNoClick}
+          disabled={noClickCount >= 4}
+        >
           No <Heart>💔</Heart>
         </NoButton>
       </ButtonContainer>
+      <MusicPlayer audio={audio} />
     </Container>
   );
 };

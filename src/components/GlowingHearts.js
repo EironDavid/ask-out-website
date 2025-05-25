@@ -43,8 +43,10 @@ const Heart = styled.div`
   position: absolute;
   font-size: ${props => props.size}px;
   color: ${props => props.color};
-  animation: ${css`${float} ${props => props.duration}s infinite ease-in-out,
-             ${glow} 2s infinite ease-in-out`};
+  animation: ${props => css`
+    ${float} ${props.duration}s infinite ease-in-out,
+    ${glow} 2s infinite ease-in-out
+  `};
   opacity: 0.3;
   transform-origin: center;
 `;

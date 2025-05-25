@@ -50,20 +50,21 @@ const Container = styled.div`
 `;
 
 const Envelope = styled.div`
-  width: 300px;
-  height: 200px;
+  width: 200px;
+  height: 130px;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 8px;
   position: relative;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
-  animation: ${css`${float} 3s ease-in-out infinite`};
-  margin-bottom: 30px;
+  animation: ${props => css`${float} 3s ease-in-out infinite`};
+  margin-top: 20px;
+  margin-bottom: 20px;
   transform-origin: center;
 
-  ${props => props.isOpening && `
-    animation: ${css`${openEnvelope} 1s forwards`};
+  ${props => props.isOpening && css`
+    animation: ${openEnvelope} 1s forwards;
   `}
 
   &:hover {
@@ -91,10 +92,10 @@ const Envelope = styled.div`
 
 const EnvelopeFlap = styled.div`
   position: absolute;
-  top: -100px;
+  top: -65px;
   left: 0;
   right: 0;
-  height: 100px;
+  height: 65px;
   background: #fff;
   clip-path: polygon(0 100%, 50% 0, 100% 100%);
   transform-origin: top;
@@ -111,14 +112,14 @@ const EnvelopeSeal = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
   background: #ff69b4;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 20px;
   color: white;
   box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
   transition: all 0.3s ease;
@@ -132,7 +133,7 @@ const Title = styled.h1`
   font-size: 2.5rem;
   color: #2c3e50;
   margin-bottom: 1rem;
-  animation: ${css`${fadeIn} 1s ease-out`};
+  animation: ${props => css`${fadeIn} 1s ease-out`};
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
 `;
@@ -141,31 +142,40 @@ const Subtitle = styled.p`
   font-size: 1.2rem;
   color: #666;
   margin-bottom: 2rem;
-  animation: ${css`${fadeIn} 1s ease-out 0.3s backwards`};
+  animation: ${props => css`${fadeIn} 1s ease-out 0.3s backwards`};
 `;
 
 const Heart = styled.span`
   color: #ff69b4;
   font-size: 1.5em;
   margin: 0 5px;
-  animation: ${css`${float} 2s ease-in-out infinite`};
+  animation: ${props => css`${float} 2s ease-in-out infinite`};
 `;
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [isOpening, setIsOpening] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
 
   const handleEnvelopeClick = () => {
-    setIsOpening(true);
-    setTimeout(() => {
-      navigate('/response');
-    }, 1000);
+    if (clickCount === 0) {
+      setClickCount(1);
+    } else if (clickCount === 1) {
+      setIsOpening(true);
+      setTimeout(() => {
+        navigate('/response');
+      }, 1000);
+    }
   };
 
   return (
     <Container>
       <Title>Open Letter <Heart>💌</Heart></Title>
-      <Subtitle>Click the envelope to open</Subtitle>
+      <Subtitle>
+        {clickCount === 0 
+          ? "Inside this envelope something I should've asked long time ago"
+          : "Are you sure you want to open it?"}
+      </Subtitle>
       <Envelope onClick={handleEnvelopeClick} isOpening={isOpening}>
         <EnvelopeFlap />
         <EnvelopeSeal>❤️</EnvelopeSeal>
