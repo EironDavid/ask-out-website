@@ -152,19 +152,61 @@ const ResponsePage = () => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [noClickCount, setNoClickCount] = useState(0);
   const [showNoSequence, setShowNoSequence] = useState(false);
-  const [audio] = useState(new Audio(require('../media/Just the Way You Are.mp3')));
-  const navigate = useNavigate();
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  
+  const playlist = [
+    {
+      title: "Just the Way You Are",
+      file: require('../media/Just the Way You Are.mp3')
+    },
+    {
+      title: "Miss Independent",
+      file: require('../media/Miss Independent.mp3')
+    },
+    {
+      title: "Paris",
+      file: require('../media/Paris.mp3')
+    },
+    {
+      title: "To the Bone",
+      file: require('../media/To the Bone.mp3')
+    }
+  ];
+
+  const [audio] = useState(() => {
+    const a = new Audio(playlist[0].file);
+    a.volume = 0.07;
+    return a;
+  });
 
   useEffect(() => {
-    // Start playing music when component mounts
-    audio.play().catch(error => {
-      console.log("Audio autoplay failed:", error);
+    const playMusic = async () => {
+      try {
+        await audio.play();
+      } catch (error) {
+        console.log("Audio autoplay failed:", error);
+        document.addEventListener('click', () => {
+          audio.play();
+        }, { once: true });
+      }
+    };
+    
+    playMusic();
+
+    // Add event listener for when song ends
+    audio.addEventListener('ended', () => {
+      setCurrentSongIndex((prevIndex) => {
+        const nextIndex = (prevIndex + 1) % playlist.length;
+        audio.src = playlist[nextIndex].file;
+        audio.play();
+        return nextIndex;
+      });
     });
 
-    // Cleanup function to stop music when component unmounts
     return () => {
       audio.pause();
       audio.currentTime = 0;
+      audio.removeEventListener('ended', () => {});
     };
   }, [audio]);
 
@@ -211,6 +253,8 @@ const ResponsePage = () => {
 
   const noResponseContent = getNoResponseContent();
 
+  const navigate = useNavigate();
+
   return (
     <Container>
       <BackButton />
@@ -235,7 +279,26 @@ const ResponsePage = () => {
           No <Heart>💔</Heart>
         </NoButton>
       </ButtonContainer>
-      <MusicPlayer audio={audio} />
+      <MusicPlayer 
+        audio={audio} 
+        currentSong={playlist[currentSongIndex].title}
+        onNext={() => {
+          setCurrentSongIndex((prevIndex) => {
+            const nextIndex = (prevIndex + 1) % playlist.length;
+            audio.src = playlist[nextIndex].file;
+            audio.play();
+            return nextIndex;
+          });
+        }}
+        onPrevious={() => {
+          setCurrentSongIndex((prevIndex) => {
+            const nextIndex = (prevIndex - 1 + playlist.length) % playlist.length;
+            audio.src = playlist[nextIndex].file;
+            audio.play();
+            return nextIndex;
+          });
+        }}
+      />
     </Container>
   );
 };
