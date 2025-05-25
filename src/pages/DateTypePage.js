@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import BackButton from '../components/BackButton';
+import MusicPlayer from '../components/MusicPlayer';
 
 const fadeIn = keyframes`
   from {
@@ -60,7 +61,34 @@ const Heart = styled.span`
   display: inline-block;
 `;
 
-const DateTypePage = () => {
+const DateTypePage = ({ 
+  audio, 
+  currentSongIndex, 
+  setCurrentSongIndex, 
+  isPlaying, 
+  setIsPlaying,
+  onNext,
+  onPrevious 
+}) => {
+  const playlist = [
+    {
+      title: "Just the Way You Are",
+      file: require('../media/Just the Way You Are.mp3')
+    },
+    {
+      title: "Miss Independent",
+      file: require('../media/Miss Independent.mp3')
+    },
+    {
+      title: "Paris",
+      file: require('../media/Paris.mp3')
+    },
+    {
+      title: "To the Bone",
+      file: require('../media/To the Bone.mp3')
+    }
+  ];
+
   return (
     <Container>
       <BackButton />
@@ -69,6 +97,14 @@ const DateTypePage = () => {
         <div>Okay miss ma'am, I'll go set it now! 💝</div>
         <Heart>❤️</Heart>
       </Message>
+      <MusicPlayer 
+        audio={audio} 
+        currentSong={playlist[currentSongIndex].title}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        onNext={onNext}
+        onPrevious={onPrevious}
+      />
     </Container>
   );
 };

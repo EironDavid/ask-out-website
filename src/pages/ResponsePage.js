@@ -88,16 +88,16 @@ const Button = styled.button`
 `;
 
 const YesButton = styled(Button)`
-  background: linear-gradient(45deg, #2ecc71, #27ae60);
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
   &:hover {
-    background: linear-gradient(45deg, #27ae60, #2ecc71);
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
   }
 `;
 
 const NoButton = styled(Button)`
-  background: linear-gradient(45deg, #e74c3c, #c0392b);
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
   &:hover {
-    background: linear-gradient(45deg, #c0392b, #e74c3c);
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
   }
   ${props => props.disabled && css`
     opacity: 0.5;
@@ -148,11 +148,18 @@ const ResponseMessage = styled.div`
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 `;
 
-const ResponsePage = () => {
+const ResponsePage = ({ 
+  audio, 
+  currentSongIndex, 
+  setCurrentSongIndex, 
+  isPlaying, 
+  setIsPlaying,
+  onNext,
+  onPrevious 
+}) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [noClickCount, setNoClickCount] = useState(0);
   const [showNoSequence, setShowNoSequence] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
   
   const playlist = [
     {
@@ -173,43 +180,6 @@ const ResponsePage = () => {
     }
   ];
 
-  const [audio] = useState(() => {
-    const a = new Audio(playlist[0].file);
-    a.volume = 0.07;
-    return a;
-  });
-
-  useEffect(() => {
-    const playMusic = async () => {
-      try {
-        await audio.play();
-      } catch (error) {
-        console.log("Audio autoplay failed:", error);
-        document.addEventListener('click', () => {
-          audio.play();
-        }, { once: true });
-      }
-    };
-    
-    playMusic();
-
-    // Add event listener for when song ends
-    audio.addEventListener('ended', () => {
-      setCurrentSongIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % playlist.length;
-        audio.src = playlist[nextIndex].file;
-        audio.play();
-        return nextIndex;
-      });
-    });
-
-    return () => {
-      audio.pause();
-      audio.currentTime = 0;
-      audio.removeEventListener('ended', () => {});
-    };
-  }, [audio]);
-
   const handleNoClick = () => {
     if (noClickCount < 4) {
       setShowNoSequence(true);
@@ -222,6 +192,11 @@ const ResponsePage = () => {
     setTimeout(() => {
       navigate('/date-type');
     }, 2000);
+  };
+
+  const handleChangeMind = () => {
+    setNoClickCount(0);
+    setShowNoSequence(false);
   };
 
   const getNoResponseContent = () => {
@@ -244,7 +219,7 @@ const ResponsePage = () => {
       case 4:
         return {
           image: require('../media/no4.jpg'),
-          message: "Okay, :(("
+          message: "okayy:(("
         };
       default:
         return null;
@@ -259,9 +234,11 @@ const ResponsePage = () => {
     <Container>
       <BackButton />
       {showConfetti && <Confetti />}
-      <Question>
-        Would you like to go out with me? <Heart>💝</Heart>
-      </Question>
+      {!showNoSequence && (
+        <Question>
+          Would you like to go out with me? <Heart>💝</Heart>
+        </Question>
+      )}
       {showNoSequence && noResponseContent && (
         <NoResponseSequence>
           <ResponseImage src={noResponseContent.image} alt="Response" />
@@ -269,35 +246,37 @@ const ResponsePage = () => {
         </NoResponseSequence>
       )}
       <ButtonContainer>
-        <YesButton onClick={handleYesClick}>
-          Yes! <Heart>💖</Heart>
-        </YesButton>
-        <NoButton 
-          onClick={handleNoClick}
-          disabled={noClickCount >= 4}
-        >
-          No <Heart>💔</Heart>
-        </NoButton>
+        {!showNoSequence ? (
+          <>
+            <YesButton onClick={handleYesClick}>
+              Yes! <Heart>💖</Heart>
+            </YesButton>
+            <NoButton onClick={handleNoClick}>
+              No <Heart>💔</Heart>
+            </NoButton>
+          </>
+        ) : noClickCount < 4 ? (
+          <>
+            <YesButton onClick={handleNoClick}>
+              Yes I don't wanna go out with you
+            </YesButton>
+            <NoButton onClick={handleChangeMind}>
+              No I change my mind
+            </NoButton>
+          </>
+        ) : (
+          <BackButton onClick={() => navigate('/')}>
+            Back to Home
+          </BackButton>
+        )}
       </ButtonContainer>
       <MusicPlayer 
         audio={audio} 
         currentSong={playlist[currentSongIndex].title}
-        onNext={() => {
-          setCurrentSongIndex((prevIndex) => {
-            const nextIndex = (prevIndex + 1) % playlist.length;
-            audio.src = playlist[nextIndex].file;
-            audio.play();
-            return nextIndex;
-          });
-        }}
-        onPrevious={() => {
-          setCurrentSongIndex((prevIndex) => {
-            const nextIndex = (prevIndex - 1 + playlist.length) % playlist.length;
-            audio.src = playlist[nextIndex].file;
-            audio.play();
-            return nextIndex;
-          });
-        }}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        onNext={onNext}
+        onPrevious={onPrevious}
       />
     </Container>
   );

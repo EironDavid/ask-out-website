@@ -163,7 +163,7 @@ const HomePage = () => {
     } else if (clickCount === 1) {
       setIsOpening(true);
       setTimeout(() => {
-        navigate('/response');
+        navigate('/messages');
       }, 1000);
     }
   };
