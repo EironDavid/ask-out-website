@@ -41,18 +41,24 @@ const Container = styled.div`
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 `;
 
-const Question = styled.h2`
-  font-size: 3.5rem;
-  color: #2c3e50;
-  margin-bottom: 3rem;
-  animation: ${css`${fadeIn} 1s ease-out`};
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+const QuestionCard = styled.div`
   background: rgba(255, 255, 255, 0.9);
   padding: 30px 50px;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   animation: ${css`${float} 3s infinite ease-in-out`};
+`;
+
+const QuestionText = styled.h2`
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 3rem;
+  animation: ${css`${fadeIn} 1s ease-out`};
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
 `;
 
 const ButtonContainer = styled.div`
@@ -133,11 +139,12 @@ const ResponseImage = styled.img`
   border-radius: 15px;
   margin-bottom: 20px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: ${fadeIn} 0.5s ease-out;
 `;
 
 const ResponseMessage = styled.div`
   color: #2c3e50;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   text-align: center;
   margin-bottom: 20px;
   padding: 0 20px;
@@ -146,6 +153,9 @@ const ResponseMessage = styled.div`
   border-radius: 15px;
   padding: 15px 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 0.5px;
+  line-height: 1.5;
 `;
 
 const ResponsePage = ({ 
@@ -160,6 +170,7 @@ const ResponsePage = ({
   const [showConfetti, setShowConfetti] = useState(false);
   const [noClickCount, setNoClickCount] = useState(0);
   const [showNoSequence, setShowNoSequence] = useState(false);
+  const [showYesMessage, setShowYesMessage] = useState(false);
   
   const playlist = [
     {
@@ -189,9 +200,7 @@ const ResponsePage = ({
 
   const handleYesClick = () => {
     setShowConfetti(true);
-    setTimeout(() => {
-      navigate('/date-type');
-    }, 2000);
+    setShowYesMessage(true);
   };
 
   const handleChangeMind = () => {
@@ -234,10 +243,22 @@ const ResponsePage = ({
     <Container>
       <BackButton />
       {showConfetti && <Confetti />}
-      {!showNoSequence && (
-        <Question>
-          Would you like to go out with me? <Heart>💝</Heart>
-        </Question>
+      {showYesMessage && (
+        <>
+          <ResponseImage src={require('../media/happy1.jpg')} alt="Happy" />
+          <ResponseMessage>
+            OKAY WAIT EDI KINIKILIG NAKO NYAN! KIDDING ASIDE 
+            This little website can't save answers, so… could you message me and let me know what you clicked?
+            I really want to hear it from you.
+          </ResponseMessage>
+        </>
+      )}
+      {!showNoSequence && !showYesMessage && (
+        <QuestionCard>
+          <QuestionText>
+            Even though we haven't met in person yet, I already know I want to. Would you like to go out with me?
+          </QuestionText>
+        </QuestionCard>
       )}
       {showNoSequence && noResponseContent && (
         <NoResponseSequence>
@@ -246,7 +267,7 @@ const ResponsePage = ({
         </NoResponseSequence>
       )}
       <ButtonContainer>
-        {!showNoSequence ? (
+        {!showNoSequence && !showYesMessage ? (
           <>
             <YesButton onClick={handleYesClick}>
               Yes! <Heart>💖</Heart>
@@ -255,20 +276,20 @@ const ResponsePage = ({
               No <Heart>💔</Heart>
             </NoButton>
           </>
-        ) : noClickCount < 4 ? (
+        ) : showNoSequence && noClickCount < 4 ? (
           <>
             <YesButton onClick={handleNoClick}>
-              Yes I don't wanna go out with you
+              Still No 💔
             </YesButton>
             <NoButton onClick={handleChangeMind}>
-              No I change my mind
+              Maybe I'll give you a chance 💝
             </NoButton>
           </>
-        ) : (
+        ) : showNoSequence && noClickCount === 4 ? (
           <BackButton onClick={() => navigate('/')}>
             Back to Home
           </BackButton>
-        )}
+        ) : null}
       </ButtonContainer>
       <MusicPlayer 
         audio={audio} 

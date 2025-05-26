@@ -114,7 +114,7 @@ const MessagesPage = ({
 
   const messages = [
     "Hey Jazz! I've been wanting to tell you something for a while now...",
-    "You are So exquisite, so unrefined, A masterpiece the stars designed.",
+    "You are so exquisite, so unrefined, A masterpiece the stars designed.",
     "If you let me get to know you better, I'll be the luckiest person in the world.",
     "I’ve never had the courage to ask anyone out… but something about you pulls me in. I find myself hoping, yearning.",
     "So, I have a question for you..."

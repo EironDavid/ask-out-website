@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import BackButton from '../components/BackButton';
 import MusicPlayer from '../components/MusicPlayer';
+import { useNavigate } from 'react-router-dom';
+import Confetti from '../components/Confetti';
 
 const fadeIn = keyframes`
   from {
@@ -10,18 +12,6 @@ const fadeIn = keyframes`
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const float = keyframes`
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
     transform: translateY(0);
   }
 `;
@@ -42,23 +32,6 @@ const Title = styled.h1`
   color: #2c3e50;
   margin-bottom: 2rem;
   animation: ${fadeIn} 1s ease-out;
-`;
-
-const Message = styled.div`
-  font-size: 2rem;
-  color: #34495e;
-  margin-bottom: 3rem;
-  animation: ${fadeIn} 1s ease-out 0.3s backwards;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-`;
-
-const Heart = styled.span`
-  font-size: 3rem;
-  animation: ${float} 2s infinite ease-in-out;
-  display: inline-block;
 `;
 
 const DateTypePage = ({ 
@@ -92,11 +65,7 @@ const DateTypePage = ({
   return (
     <Container>
       <BackButton />
-      <Title>YAY! 🎉</Title>
-      <Message>
-        <div>Okay miss ma'am, I'll go set it now! 💝</div>
-        <Heart>❤️</Heart>
-      </Message>
+      <Title>Thank you for your response! 💝</Title>
       <MusicPlayer 
         audio={audio} 
         currentSong={playlist[currentSongIndex].title}
